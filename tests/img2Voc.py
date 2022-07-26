@@ -7,7 +7,7 @@
 import os
 import sys
 import cv2
-
+sys.path.append("C:\\Users\\Carpenter\\Desktop\\label_convert")
 dir_name = os.path.abspath(os.path.dirname(__file__))
 libs_path = os.path.join(dir_name, '..', 'libs')
 sys.path.insert(0, libs_path)
@@ -21,11 +21,14 @@ from numpy import linspace
 
 def getW_H_C(pic_path):
     img = cv2.imread(pic_path)
+    if(img is None):
+        print("img is None")
+        return 0,0,0
     return img.shape[0], img.shape[1],img.shape[2]
 
 def main():
-    xml_folder = "/home/lcg/Downloads/xml"
-    img_folder = "/home/lcg/Downloads/新能源车牌_[1250张]"
+    xml_folder = r"C:\Users\Carpenter\Downloads\绿牌数据集-1\xml"
+    img_folder = r"C:\Users\Carpenter\Downloads\绿牌数据集-1\新能源车牌_[1250张]"
     for file in os.listdir(img_folder):
         if (file.endswith(".jpg") or file.endswith(".JPG")):
             index1 = file.find("[")
