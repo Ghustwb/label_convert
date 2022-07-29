@@ -8,7 +8,7 @@
 import os
 import cv2
 
-video_dir = r"C:\Users\Carpenter\Desktop\car_record\front"
+video_dir = r"C:\Users\Carpenter\Desktop\car_record\z50"
 save_image_dir = r"C:\Users\Carpenter\Desktop\save_image"
 factor = 100
 crop_factor = 0.8
