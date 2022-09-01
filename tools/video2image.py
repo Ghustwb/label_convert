@@ -7,17 +7,21 @@
 
 import os
 import cv2
+from tqdm import tqdm
 
-video_dir = r"C:\Users\Carpenter\Desktop\car_record\z50"
-save_image_dir = r"C:\Users\Carpenter\Desktop\save_image"
-factor = 100
+video_dir = r"G:\CarRecordVideo\video\insta"
+save_image_dir = r"G:\CarRecordVideo\Annotation\20220901_to_label\insta_img"
+skip_factor = 1.5   # skip time
 crop_factor = 0.8
+need_crop = False
 
 #list all video files
 video_list = os.listdir(video_dir)
+video_list = tqdm(video_list)
 for video in video_list:
     video_name = os.path.join(video_dir, video)
     video_capture = cv2.VideoCapture(video_name)
+    video_suffix = os.path.splitext(video_name)[-1]
     if not video_capture.isOpened():
         print("open video failed: ", video_name)
         continue
@@ -26,18 +30,22 @@ for video in video_list:
     frame_height = int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(video_capture.get(cv2.CAP_PROP_FPS))
     print(f"{video_name} has {frame_count} frames, {frame_width}x{frame_height}, {fps} fps")
-    for i in range(frame_count):
+    for i in tqdm(range(frame_count)):
         ret, frame = video_capture.read()
-        if ret and (i % factor == 0):
-            #crop the image based on factor
-            start_pix = int(frame_width*(1 - crop_factor)/2)
-            framet = frame[0:int(frame_height*crop_factor), start_pix:start_pix + int(frame_width*crop_factor)]
-            cv2.imshow("framet", framet)
-            cv2.imshow("frame", frame)
-            cv2.waitKey(1)
-
-            image_name = os.path.join(save_image_dir, video[:-4] + "_" + str(i) + ".jpg")
-            cv2.imwrite(image_name, framet)
-            print(f"{i}/{frame_count}")
+        if ret and (i % (skip_factor * fps) == 0):
+            if(need_crop):
+                #crop the image based on factor
+                start_pix = int(frame_width*(1 - crop_factor)/2)
+                framet = frame[0:int(frame_height*crop_factor), start_pix:start_pix + int(frame_width*crop_factor)]
+            else:
+                framet = frame
+            # cv2.namedWindow("image", 0)
+            # cv2.imshow("image", framet)
+            # cv2.imshow("frame", frame)
+            # cv2.waitKey(1)
+            index = 0 - len(video_suffix) 
+            image_name = os.path.join(save_image_dir, video[:index] + "_" + str(i) + ".jpg")
+            ok = cv2.imwrite(image_name, framet)
+            #print(f"{i}/{frame_count}")
         i = i + 1
      

@@ -7,9 +7,14 @@
 
 import os
 
-xml_dir = r"D:\1xml"
-img_dir = r"D:\car_record_save"
-save_dir = r"D:\1img"
+xml_dir = r"G:\CarRecordVideo\Annotation\z50_xml"
+img_dir = r"G:\CarRecordVideo\Annotation\z50"
+
+
+save_dir = img_dir + "_save"
+if(not os.path.exists(save_dir)):
+    print("Create folder to save")
+    os.mkdir(save_dir)
 
 #list all video files
 xmls_list = os.listdir(xml_dir)
