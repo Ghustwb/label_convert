@@ -163,6 +163,8 @@ class PascalVocReader:
         for object_iter in xml_tree.findall('object'):
             bnd_box = object_iter.find("bndbox")
             label = object_iter.find('name').text
+            pose = object_iter.find('pose').text
+            truncated = object_iter.find('truncated').text
             # Add chris
             difficult = False
             if object_iter.find('difficult') is not None:
