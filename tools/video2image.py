@@ -9,10 +9,10 @@ import os
 import cv2
 from tqdm import tqdm
 
-video_dir = r"G:\CarRecordVideo\video\insta"
-save_image_dir = r"G:\CarRecordVideo\Annotation\20220901_to_label\insta_img"
-skip_factor = 1.5   # skip time
-crop_factor = 0.8
+video_dir = r"C:\Users\Carpenter\Downloads\face_test"
+save_image_dir = r"C:\Users\Carpenter\Downloads\face_img"
+skip_factor = 1   # skip time
+crop_factor = 0.9
 need_crop = False
 
 #list all video files
@@ -32,7 +32,7 @@ for video in video_list:
     print(f"{video_name} has {frame_count} frames, {frame_width}x{frame_height}, {fps} fps")
     for i in tqdm(range(frame_count)):
         ret, frame = video_capture.read()
-        if ret and (i % (skip_factor * fps) == 0):
+        if ret and (i % (int(skip_factor * fps)) == 0):
             if(need_crop):
                 #crop the image based on factor
                 start_pix = int(frame_width*(1 - crop_factor)/2)

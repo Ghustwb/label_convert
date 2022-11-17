@@ -8,14 +8,15 @@ import argparse
 import multiprocessing
 import os
 import xml.etree.ElementTree
+import shutil
 
 from PIL import Image
 from pascal_voc_writer import Writer
 
 
-xml_dir = '/home/lcg/Downloads/TrainingData/VOCdevkit/VOC2007/Annotations'
-image_dir = '/home/lcg/Downloads/TrainingData/VOCdevkit/VOC2007/JPEGImages'
-yolo_dir = '/home/lcg/Downloads/TrainingData/VOCdevkit/VOC2007/yolo'
+xml_dir = r'D:\TrainingData\VOCdevkit\VOC2007\Annotations'
+image_dir = r'D:\TrainingData\VOCdevkit\VOC2007\JPEGImages'
+yolo_dir = r'D:\TrainingData\yolo'
 names = ['face','Licenseplate']
 
 def yolo2voc(txt_file):
@@ -33,9 +34,12 @@ def yolo2voc(txt_file):
 
 
 def voc2yolo(xml_file):
-    in_file = open(os.path.join(xml_dir,xml_file), 'r')
-
-    root = xml.etree.ElementTree.parse(in_file).getroot()
+    in_file = open(os.path.join(xml_dir,xml_file), 'r', encoding='utf-8')
+    try:
+        root = xml.etree.ElementTree.parse(in_file).getroot()
+    except Exception as e :
+        print(xml_file[:-4])
+        return
     size = root.find('size')
     w = int(size.find('width').text)
     h = int(size.find('height').text)
@@ -69,9 +73,12 @@ def voc2yolo(xml_file):
                 info = str(cls_id) + " " + " ".join([str(x) for x in b]) + '\n'
                 #out_file.write(str(cls_id) + " " + " ".join([str(f'{a:.6f}') for a in b]) + '\n')
                 out_file.write(info)
+            else:
+                print("no label",name )
     #print("saved: ",xml_file[:-4])
     else:
         print(xml_file[:-4])
+        #shutil.move(os.path.join(xml_dir,xml_file),os.path.join(r"D:\tmp",xml_file))
 
 
 if __name__ == '__main__':
@@ -95,3 +102,5 @@ if __name__ == '__main__':
         with multiprocessing.Pool(multiprocessing.cpu_count()) as pool:
             pool.map(voc2yolo, xml_files)
         pool.join()
+        # for xml_file in xml_files:
+        #     voc2yolo(xml_file)
